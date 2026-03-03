@@ -1,29 +1,40 @@
 import {
+  Body,
   Controller,
   Get,
   Header,
   HttpCode,
   Ip,
+  Param,
   Post,
+  Query,
   Redirect,
   Req,
   Res,
 } from '@nestjs/common';
 import type { Response } from 'express';
+import { CreateCatDto } from './create-cat.dto';
 
 @Controller('cats')
 export class CatsController {
   @Get()
   @HttpCode(200)
-  findAll(@Req() request: Request, @Ip() ip: any): string {
+  findAll(
+    @Req() request: Request,
+    @Ip() ip: any,
+    @Query('breed') breed: string,
+    @Query('age') age: number,
+  ): string {
     // console.log('request: ', request);
-    console.log('Ip: ', ip);
+    // console.log('Ip: ', ip);
+    console.log('breed from query parameters: ', breed);
+    console.log('age from query parameters: ', age);
 
     return 'This action returns all cats';
   }
 
   @Post()
-  create(): string {
+  create(@Body() createCatDto: CreateCatDto): string {
     return 'This action adds a new cat';
   }
 
@@ -43,7 +54,10 @@ export class CatsController {
 
   @Get('redirect-to-main')
   @Redirect('/')
-  redirectToMain() {
+  redirectToMain() {}
 
+  @Get(':id')
+  findOne(@Param() params: any): string {
+    return `This action returns a #${params.id} cat`;
   }
 }
